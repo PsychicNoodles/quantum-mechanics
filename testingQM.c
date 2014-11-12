@@ -17,7 +17,7 @@
 
 /*----------------------------------------------------------+
 |                                														|
-| Last Edited: Meet Patel and Mattori Birnbabybaum 10/15/14 |
+| Last Edited: Meet Patel and Mattori Birnbabybaum 10/22/14 |
 |																														|
 +----------------------------------------------------------*/
 
@@ -199,5 +199,18 @@ task main()
 {
 	while(true) {
 		nxtDisplayTextLine(3, "joy1: %d", int2bin(joystick.joy1_Buttons));
+		while(true)
+  {
+    getJoystickSettings(joystick);  // Update Buttons and Joysticks
+
+    if(joy1Btn(1) == 1)                  // If Joy1-Button1 is pressed:
+    {
+      motor[motorA] = 100;              // Turn Motor A On at full power
+    }
+    else                            // If Joy1-Button1 is NOT pressed:
+    {
+     motor[motorA] = 0;                 // Turn Motor A Off
+    }
 	}
+}
 }
