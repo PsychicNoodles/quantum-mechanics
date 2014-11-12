@@ -207,7 +207,7 @@ task main()
   {
 
     getJoystickSettings(joystick);  // Update Buttons and Joysticks
-	/*
+
     nxtDisplayTextLine(3, "j1y1 %d", joystick.joy1_y1);
     nxtDisplayTextLine(4, "j1y2 %d", joystick.joy1_y2);
 
@@ -220,11 +220,11 @@ task main()
     if(abs(y2) < THRESHOLD) {
     	y2 = 0;
   	}
-    motor[motorBL] = y1;
-    motor[motorFL] = y1;
+    //motor[motorBL] = y1;
+    //motor[motorFL] = y1;
 
-    motor[motorBR] = y2;
-    motor[motorFR] = y2;
+    //motor[motorBR] = y2;
+    //motor[motorFR] = y2;
 
     nxtDisplayTextLine(1, "left: %d", motor[motorBL]);
     nxtDisplayTextLine(2, "right: %d", motor[motorBR]);
@@ -246,7 +246,7 @@ task main()
     	//the value 127 stops a continous rotation servo but you need servoTarget for some reason -bg
     	servo[aRmLifter] = 132;
 
-  	} */
+  	}
  /* 	if(joy1Btn(7) == 1) {
   		//disengage secondary
   		nxtDisplayTextLine(6, "secondary left");
