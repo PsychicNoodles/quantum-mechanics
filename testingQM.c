@@ -205,8 +205,9 @@ task main()
 	//The manual event loop
  while(true)
   {
-    getJoystickSettings(joystick);  // Update Buttons and Joysticks
 
+    getJoystickSettings(joystick);  // Update Buttons and Joysticks
+	/*
     nxtDisplayTextLine(3, "j1y1 %d", joystick.joy1_y1);
     nxtDisplayTextLine(4, "j1y2 %d", joystick.joy1_y2);
 
@@ -245,7 +246,7 @@ task main()
     	//the value 127 stops a continous rotation servo but you need servoTarget for some reason -bg
     	servo[aRmLifter] = 132;
 
-  	}
+  	} */
  /* 	if(joy1Btn(7) == 1) {
   		//disengage secondary
   		nxtDisplayTextLine(6, "secondary left");
@@ -253,15 +254,15 @@ task main()
   	if(joy1Btn(8) == 1) {
   		//engage secondary
   		nxtDisplayTextLine(6, "secondary right");
-  	}
-/*    if(joy1Btn(1) == 1)                 // If Joy1-Button1 is pressed:
+  	}*/
+    if(joy1Btn(1) == 1)                 // If Joy1-Button1 is pressed:
     {
     	nxtDisplayTextLine(3, "motor 1 go");
-      motor[motorFR] = 100;              // Turn Motor A On at full power
+     // motor[motorFR] = 100;              // Turn Motor A On at full power
     }
     else                            // If Joy1-Button1 is NOT pressed:
     {
-     motor[motorFR] = 0;                 // Turn Motor A Off
-    }*/
+     //motor[motorFR] = 0;                 // Turn Motor A Off
+    }
   }
 }
