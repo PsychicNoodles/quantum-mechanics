@@ -18,7 +18,7 @@
 
 /*----------------------------------------------------------+
 |                                														|
-| Last Edited: Meet Patel and Mattori Burn-Baby-Baum 11/03/14
+| Last Edited: Meet Patel and Mattori Burn-Baby-Baum 11/13/14
 |																														|
 +----------------------------------------------------------*/
 
@@ -220,11 +220,11 @@ task main()
     if(abs(y2) < THRESHOLD) {
     	y2 = 0;
   	}
-    //motor[motorBL] = y1;
-    //motor[motorFL] = y1;
+    motor[motorBL] = y1/1.28;
+    motor[motorFL] = y1/1.28;
 
-    //motor[motorBR] = y2;
-    //motor[motorFR] = y2;
+    motor[motorBR] = y2/1.28;
+    motor[motorFR] = y2/1.28;
 
     nxtDisplayTextLine(1, "left: %d", motor[motorBL]);
     nxtDisplayTextLine(2, "right: %d", motor[motorBR]);
