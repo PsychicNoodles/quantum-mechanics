@@ -1,16 +1,16 @@
- #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTServo,  HTMotor)
+#pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTServo,  HTMotor)
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     IR,             sensorHiTechnicIRSeeker1200)
 #pragma config(Motor,  motorA,           ,             tmotorNXT, openLoop)
 #pragma config(Motor,  motorB,           ,             tmotorNXT, openLoop)
 #pragma config(Motor,  motorC,           ,             tmotorNXT, openLoop)
 #pragma config(Motor,  mtr_S1_C1_1,     motorPulley,   tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C1_2,     motorE,        tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C1_2,     motorNom,      tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C2_1,     motorFL,       tmotorTetrix, openLoop, reversed)
 #pragma config(Motor,  mtr_S1_C2_2,     motorFR,       tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C4_1,     motorBL,       tmotorTetrix, openLoop, reversed, encoder)
 #pragma config(Motor,  mtr_S1_C4_2,     motorBR,       tmotorTetrix, openLoop, encoder)
-#pragma config(Servo,  srvo_S1_C3_1,    nomnom,               tServoNone)
+#pragma config(Servo,  srvo_S1_C3_1,    box,                  tServoStandard)
 #pragma config(Servo,  srvo_S1_C3_2,    servo2,               tServoNone)
 #pragma config(Servo,  srvo_S1_C3_3,    servo3,               tServoNone)
 #pragma config(Servo,  srvo_S1_C3_4,    servo4,               tServoNone)
@@ -20,7 +20,7 @@
 
 /*----------------------------------------------------------+
 |                                														|
-| Last Edited: Meet Patel and Mattori Burn-Baby-Baum 11/21/14s
+| Last Edited: Meet Patel and Mattori Burn-Baby-Baum 12/30/14
 |																														|
 +----------------------------------------------------------*/
 
@@ -40,10 +40,12 @@ void haltMotors() {
 }
 
 void forwardMarch(int pwr) {
-	 	motor[motorBL] = pwr;
+
+		motor[motorBL] = pwr;
     motor[motorFL] = pwr;
     motor[motorFR] = pwr;
     motor[motorBR] = pwr;
+
 }
 
 void moveTicks(int pwr, int dir, int ticks){
@@ -188,28 +190,54 @@ void sensIR() {
 	sensIR(1);
 }
 
-int int2bin(int val) {
-	int ret = 0;
-	while(val > 0b01) {
-		val >>= 1;
-		ret++;
+void autonomous() {
+	//forwardMarch(100);
+		//wait1Msec(1700);
+		//forwardMarch(0);
+	//	int power = 50;
+		motor[motorBL] = 50;
+			motor[motorBR] = 50;
+				motor[motorFL] = 50;
+					motor[motorFR] = 50;
+					wait10Msec(500);
+					motor[motorBL] = 0;
+			motor[motorBR] = 0;
+				motor[motorFL] = 0;
+					motor[motorFR] = 0;
+
+	//0 = pos 3, 3 = pos 2, 1 == pos 1
+/*
+	switch(SensorValue[IR]) {
+	case 1: {
+		forwardMarch(100);
+		wait1Msec(1400);
+		forwardMarch(0);
+		motor[motorPulley] = 100;
+		wait1Msec(9000);
+		motor[motorPulley] = 0;
+
+		break;
 	}
-	return ret;
+	//case 3: {
+		//forwardMarch();
+		//wait1Msec();
+		//forwardMarch();
+	//}
+	}*/
 }
 
 const int THRESHOLD = 27;
 task main()
 {
-	//waitForStart();
+	waitForStart();
 	//make sure there is a threshold the joystick values have to pass to move the motors
 	//the motors might stop if we have values that are too low
+	//sautonomous();
 
 	//The manual event loop
-bool forward = false;
-bool back = false;
  while(true)
   {
-
+	//autonomous();
     getJoystickSettings(joystick);  // Update Buttons and Joysticks
 
     //nxtDisplayTextLine(3, "j1y1 %d", joystick.joy1_y1);
@@ -235,8 +263,10 @@ bool back = false;
     motor[motorBR] = y2/1.28;
     motor[motorFR] = y2/1.28;
 
-    nxtDisplayTextLine(1, "left: %d", motor[motorBL]);
-    nxtDisplayTextLine(2, "right: %d", motor[motorBR]);
+    nxtDisplayTextLine(1, "y1: %d", joystick.joy1_y1);
+    nxtDisplayTextLine(2, "left: %d", motor[motorFL]);
+    nxtDisplayTextLine(3, "y2: %d", joystick.joy1_y2);
+    nxtDisplayTextLine(4, "right: %d", motor[motorFR]);
 
     if(joy1Btn(8) == 1) {
     	motor[motorPulley] = 100;
@@ -247,21 +277,14 @@ bool back = false;
 		}
 
 		if(joy1Btn(7) == 1) {
-			servo[nomnom] = 255;
+			motor[motorNom] = 100;
 		} else if(joy1Btn(5) == 1) {
-			servo[nomnom] = 0;
+			motor[motorNom] = -100;
 		} else {
-			servo[nomnom] = 127;
+			motor[motorNom] = 0;
 		}
-		/*if(joy1Btn(7) == 1) {
-			if(forward) { servo[nomnom] = 127; forward = false; back = false; }
-			else { servo[nomnom] = 255; forward = true; back = false; }
-		} else if(joy1Btn(5) == 1) {
-			if(back) { servo[nomnom] = 127; forward = false; back = false; }
-			else { servo[nomnom] = 0; forward = false; back = true; }
-		}*/
 
-    /*short q1 = joystick.joy2_y1;
+    short q1 = joystick.joy2_y1;
 
     if(abs(q1) < THRESHOLD) {
     	q1 = 0;
@@ -271,10 +294,9 @@ bool back = false;
     	q2 = 0;
   	}
 
-  	motor[motorPulley] = q1/1.28;*/
-  	//nxtDisplayTextLine(3, "pulley: %d", motor[motorPulley]);
-  	//nxtDisplayTextLine(4, "p-in: %d", joystick.joy2_y1);
-
+  	nxtDisplayTextLine(5, "p-in: %d", joystick.joy2_y1);
+  	nxtDisplayTextLine(6, "pulley: %d", motor[motorPulley]);
+		nxtDisplayTextLine(7, "sensor value: %d", SensorValue[IR]);
 
   	}
 }
