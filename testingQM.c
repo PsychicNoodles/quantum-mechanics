@@ -1,6 +1,5 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTServo,  HTMotor)
-#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
-#pragma config(Sensor, S2,     IR,             sensorHiTechnicIRSeeker1200)
+#pragma config(Sensor, S2,     US,             sensorSONAR)
 #pragma config(Motor,  motorA,           ,             tmotorNXT, openLoop)
 #pragma config(Motor,  motorB,           ,             tmotorNXT, openLoop)
 #pragma config(Motor,  motorC,           ,             tmotorNXT, openLoop)
@@ -155,12 +154,29 @@ wait10Msec(100);
 }
 
 void turnLeft(int ticks) {
-	nMotorEncoder[motorFL] = 0;
-	nMotorEncoder[motorFR] = 0;
+	//nMotorEncoder[motorFL] = 0;
+	//nMotorEncoder[motorFR] = 0;
 	motor[motorBL] = -100;
 	motor[motorBR] = 100;
 	motor[motorFL] = -100;
 	motor[motorFR] = 100;
+	wait1Msec(ticks);
+	motor[motorBL] = 0;
+	motor[motorBR] = 0;
+	motor[motorFL] = 0;
+	motor[motorFR] = 0;
+}
+
+void turnRight(int ticks) {
+	motor[motorBL] = 100;
+	motor[motorBR] = -100;
+	motor[motorFL] = 100;
+	motor[motorFR] = -100;
+	wait1Msec(ticks);
+	motor[motorBL] = 0;
+	motor[motorBR] = 0;
+	motor[motorFL] = 0;
+	motor[motorFR] = 0;
 }
 
 //TODO correct value for this
@@ -168,7 +184,7 @@ const int COEF = 20; //coeff conversion between IR sensor vals and ticks
 const int TURN_SPEED = 50;
 //Finds the ir beacon
 //recurse prevents the robot from repeatedly turning too far to face the right way
-void sensIR(int recurse) {
+/*void sensIR(int recurse) {
 	bool found = false;
 	while(!found) {
 		while(SensorValue[IR] == 0) {}
@@ -184,10 +200,22 @@ void sensIR(int recurse) {
 			sensIR(recurse + 1);
 		}
 	}
-}
+}*/
 
-void sensIR() {
+/*void sensIR() {
 	sensIR(1);
+}*/
+
+void backwards(int duration, int speed) {
+	motor[motorBL] = speed;
+	motor[motorBR] = speed;
+	motor[motorFL] = speed;
+	motor[motorFR] = speed;
+	wait1Msec(duration);
+	motor[motorBL] = 0;
+	motor[motorBR] = 0;
+	motor[motorFL] = 0;
+	motor[motorFR] = 0;
 }
 
 void autonomous() {
@@ -195,17 +223,47 @@ void autonomous() {
 		//wait1Msec(1700);
 		//forwardMarch(0);
 	//	int power = 50;
-		motor[motorBL] = 50;
-			motor[motorBR] = 50;
-				motor[motorFL] = 50;
-					motor[motorFR] = 50;
-					wait10Msec(500);
-					motor[motorBL] = 0;
-			motor[motorBR] = 0;
-				motor[motorFL] = 0;
-					motor[motorFR] = 0;
+backwards(1100, -50);
+	/*	motor[motorBL] = -50;
+		motor[motorBR] = -50;
+		motor[motorFL] = -50;
+		motor[motorFR] = -50;
+		wait1Msec(1100);
+		motor[motorBL] = 0;
+		motor[motorBR] = 0;
+		motor[motorFL] = 0;
+		motor[motorFR] = 0;*/
 
-	//0 = pos 3, 3 = pos 2, 1 == pos 1
+		int min = 255;
+		for(int i = 0; i < 10; i++) {
+			int current = SensorValue[US];
+			min = min < current ? min : current;
+			wait1Msec(100);
+		}
+		//~36 = pos 1, 255 = pos 2, ~63 = pos 3
+		if(min > 30 && min < 40) {
+			backwards(400, -50);
+		} else if(min == 255) {
+			turnLeft(680);
+			wait1Msec(50);
+			backwards(1450, -50);
+			wait1Msec(50);
+			turnRight(1020);
+			wait1Msec(50);
+			backwards(950, -50);
+		} else {
+			turnLeft(680);
+			wait1Msec(50);
+			backwards(1500, -50);
+			wait1Msec(50);
+			turnRight(680);
+			wait1Msec(50);
+			backwards(1270, -50);
+			wait1Msec(50);
+			turnRight(690);
+			wait1Msec(50);
+			backwards(400, -50);
+		}
 /*
 	switch(SensorValue[IR]) {
 	case 1: {
@@ -234,10 +292,10 @@ task main()
 	//the motors might stop if we have values that are too low
 	//sautonomous();
 
+	autonomous();
 	//The manual event loop
- while(true)
+ /*while(true)
   {
-	//autonomous();
     getJoystickSettings(joystick);  // Update Buttons and Joysticks
 
     //nxtDisplayTextLine(3, "j1y1 %d", joystick.joy1_y1);
@@ -296,7 +354,7 @@ task main()
 
   	nxtDisplayTextLine(5, "p-in: %d", joystick.joy2_y1);
   	nxtDisplayTextLine(6, "pulley: %d", motor[motorPulley]);
-		nxtDisplayTextLine(7, "sensor value: %d", SensorValue[IR]);
+		nxtDisplayTextLine(7, "sensor value: %d", SensorValue[US]);
 
-  	}
+  	}*/
 }
