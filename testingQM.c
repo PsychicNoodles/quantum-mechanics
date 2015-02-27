@@ -4,15 +4,15 @@
 #pragma config(Motor,  motorA,           ,             tmotorNXT, openLoop)
 #pragma config(Motor,  motorB,           ,             tmotorNXT, openLoop)
 #pragma config(Motor,  motorC,           ,             tmotorNXT, openLoop)
-#pragma config(Motor,  mtr_S1_C1_1,     motorPulley,   tmotorTetrix, openLoop, encoder)
-#pragma config(Motor,  mtr_S1_C1_2,     motorNom,      tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C1_1,     motorNom,      tmotorTetrix, openLoop, encoder)
+#pragma config(Motor,  mtr_S1_C1_2,     motorPulley,   tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C2_1,     motorFL,       tmotorTetrix, openLoop, reversed)
 #pragma config(Motor,  mtr_S1_C2_2,     motorFR,       tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C4_1,     motorBL,       tmotorTetrix, openLoop, reversed, encoder)
 #pragma config(Motor,  mtr_S1_C4_2,     motorBR,       tmotorTetrix, openLoop, encoder)
 #pragma config(Servo,  srvo_S1_C3_1,    box,                  tServoStandard)
 #pragma config(Servo,  srvo_S1_C3_2,    servo2,               tServoNone)
-#pragma config(Servo,  srvo_S1_C3_3,    servo3,               tServoNone)
+#pragma config(Servo,  srvo_S1_C3_3,    feet,                 tServoStandard)
 #pragma config(Servo,  srvo_S1_C3_4,    servo4,               tServoNone)
 #pragma config(Servo,  srvo_S1_C3_5,    servo5,               tServoNone)
 #pragma config(Servo,  srvo_S1_C3_6,    servo6,               tServoNone)
@@ -20,7 +20,7 @@
 
 /*----------------------------------------------------------+
 |                                														|
-| Last Edited: Meet Patel and Mattori Burn-Baby-Baum 12/30/14
+| Last Edited: Meet Patel and Mattori Burn-Baby-Baum 2/16/15|
 |																														|
 +----------------------------------------------------------*/
 
@@ -28,147 +28,6 @@
 
 //Constants
 const int THRESHOLD = 27;
-//if whichAuto = false, we will run the ramp autonomous code
-const bool whichAuto = true;
-
-void turnLeft(int ticks) {
-	//nMotorEncoder[motorFL] = 0;
-	//nMotorEncoder[motorFR] = 0;
-	motor[motorBL] = -100;
-	motor[motorBR] = 100;
-	motor[motorFL] = -100;
-	motor[motorFR] = 100;
-	wait1Msec(ticks);
-	motor[motorBL] = 0;
-	motor[motorBR] = 0;
-	motor[motorFL] = 0;
-	motor[motorFR] = 0;
-}
-
-void turnRight(int ticks) {
-	motor[motorBL] = 100;
-	motor[motorBR] = -100;
-	motor[motorFL] = 100;
-	motor[motorFR] = -100;
-	wait1Msec(ticks);
-	motor[motorBL] = 0;
-	motor[motorBR] = 0;
-	motor[motorFL] = 0;
-	motor[motorFR] = 0;
-}
-
-//TODO correct value for this
-//Finds the ir beacon
-//recurse prevents the robot from repeatedly turning too far to face the right way
-/*void sensIR(int recurse) {
-	bool found = false;
-	while(!found) {
-		while(SensorValue[IR] == 0) {}
-		int val = SensorValue[IR]; //wtf is a `word` datatype
-		if(val == 5) {
-			found = true;
-			//TODO this
-		} else if(val < 5) {
-			turnTicks(TURN_SPEED * -1, (val * COEF) / recurse);
-			sensIR(recurse + 1);
-		} else {
-			turnTicks(TURN_SPEED, (val * COEF) / recurse);
-			sensIR(recurse + 1);
-		}
-	}
-}*/
-
-/*void sensIR() {
-	sensIR(1);
-}*/
-
-void backwards(int duration, int speed) {
-	motor[motorBL] = speed;
-	motor[motorBR] = speed;
-	motor[motorFL] = speed;
-	motor[motorFR] = speed;
-	wait1Msec(duration);
-	motor[motorBL] = 0;
-	motor[motorBR] = 0;
-	motor[motorFL] = 0;
-	motor[motorFR] = 0;
-}
-
-void autonomous() {
-	//forwardMarch(100);
-		//wait1Msec(1700);
-		//forwardMarch(0);
-	//	int power = 50;
-if(whichAuto){
-backwards(1330, -50);
-motor[motorPulley] = 100;
-wait1Msec(8000);
-motor[motorPulley] = 0;
-wait1Msec(500);
-servo[box] = 255;
-wait1Msec(2000);
-	/*	motor[motorBL] = -50;
-		motor[motorBR] = -50;
-		motor[motorFL] = -50;
-		motor[motorFR] = -50;
-		wait1Msec(1100);
-		motor[motorBL] = 0;
-		motor[motorBR] = 0;
-		motor[motorFL] = 0;
-		motor[motorFR] = 0;*/
-
-		//NEED TO REPLACE TIME VALUES WITH ENCODER VALUES
-		/*int min = 255;
-		for(int i = 0; i < 10; i++) {
-			int current = SensorValue[US];
-			min = min < current ? min : current;
-			wait1Msec(100);
-		}*/
-		//~36 = pos 1, 255 = pos 2, ~63 = pos 3
-		/*if(min > 30 && min < 40) {
-			backwards(400, -50);
-		} else if(min == 255) {
-			turnLeft(680);
-			wait1Msec(50);
-			backwards(1450, -50);
-			wait1Msec(50);
-			turnRight(1020);
-			wait1Msec(50);
-			backwards(950, -50);
-		} else {
-			turnLeft(680);
-			wait1Msec(50);
-			backwards(1500, -50);
-			wait1Msec(50);
-			turnRight(680);
-			wait1Msec(50);
-			backwards(1270, -50);
-			wait1Msec(50);
-			turnRight(690);
-			wait1Msec(50);
-			backwards(400, -50);
-		}*/
-	}
-	else backwards(1900, -80);
-/*
-	switch(SensorValue[IR]) {
-	case 1: {
-		forwardMarch(100);
-		wait1Msec(1400);
-		forwardMarch(0);
-		motor[motorPulley] = 100;
-		wait1Msec(9000);
-		motor[motorPulley] = 0;
-
-		break;
-	}
-	//case 3: {
-		//forwardMarch();
-		//wait1Msec();
-		//forwardMarch();
-	//}
-	}*/
-}
 
 
 task main()
@@ -178,11 +37,18 @@ task main()
 	//the motors might stop if we have values that are too low
 	//sautonomous();
 
-	autonomous();
+	//autonomous();
 	//The manual event loop
 	bool started = false;
+	nMotorEncoder[motorPulley] = 0;
+	nMotorEncoder[motorBL] = 0;
+	nMotorEncoder[motorBR] = 0;
  while(true)
   {
+  	//nxtDisplayTextLine(3, "BR encoder %d", nMotorEncoder[motorBR]);
+  	nxtDisplayTextLine(4, "BL encoder %d", nMotorEncoder[motorBL]);
+  	nxtDisplayTextLine(5, "p encoder: %d", nMotorEncoder[motorPulley]);
+  	nxtDisplayTextLine(3, "sensor: %d", SensorValue[US]);
     getJoystickSettings(joystick);  // Update Buttons and Joysticks
 
     //nxtDisplayTextLine(3, "j1y1 %d", joystick.joy1_y1);
@@ -198,13 +64,12 @@ task main()
 		    //Threshold is 27 right now see above declaration ^^
 		    if(abs(y1) < THRESHOLD) {
 		    	y1 = 0;
-		    	started = true;
-		  	}
+		  	} else started = true;
 
 		    if(abs(y2) < THRESHOLD) {
 		    	y2 = 0;
-		    	started = true;
-		  	}
+		    } else started = true;
+
 		    motor[motorBL] = y1/1.28;
 		    motor[motorFL] = y1/1.28;
 
@@ -212,10 +77,10 @@ task main()
 		    motor[motorFR] = y2/1.28;
   	}
 
-    nxtDisplayTextLine(1, "y1: %d", joystick.joy1_y1);
-    nxtDisplayTextLine(2, "left: %d", motor[motorFL]);
-    nxtDisplayTextLine(3, "y2: %d", joystick.joy1_y2);
-    nxtDisplayTextLine(4, "right: %d", motor[motorFR]);
+    //nxtDisplayTextLine(1, "y1: %d", joystick.joy1_y1);
+    //nxtDisplayTextLine(2, "left: %d", motor[motorFL]);
+    //nxtDisplayTextLine(3, "y2: %d", joystick.joy1_y2);
+    //nxtDisplayTextLine(4, "right: %d", motor[motorFR]);
 
     //GÜNthER
     short tophat = joystick.joy2_TopHat;
@@ -225,12 +90,13 @@ task main()
     	default: motor[motorPulley] = 0;
   	}
 
-		if(joy2Btn(5) == 1) {
+		/*if(joy2Btn(5) == 1) {
 			motor[motorNom] = 60;
 			started = true;
-		}
-		else if(joy2Btn(4) == 1) {
-			motor[motorNom] = 100;
+		}*/
+
+		if(joy2Btn(4) == 1) {
+			motor[motorNom] = -100;
 			started = true;
 		}
 		else {
@@ -238,16 +104,22 @@ task main()
 		}
 
   	if(joy2Btn(2) == 1) {
-  		servo[box] = 255;
-  		wait1Msec(50);
+  		servo[box] = 0;
+  		//wait1Msec(50);
   	}
-  	else servo[box] = 0;
+  	else servo[box] = 220;
 
+  	if(joy2Btn(5) == 1) {
+  		servo[feet] = 80;
+		}
+		else if (joy2Btn(7) == 1) {
+			servo[feet] = 0;
+		}
+		//servo[feet] = 0;
 
-
-  	//nxtDisplayTextLine(5, "p-in: %d", joystick.joy2_y1);
-  	nxtDisplayTextLine(6, "pulley: %d", motor[motorPulley]);
-		nxtDisplayTextLine(7, "encoder: %d", nMotorEncoder[motorPulley]);
+  	//nxtDisplayTextLine(5, "started: %s", started);
+  	//nxtDisplayTextLine(6, "pulley: %d", motor[motorPulley]);
+		//nxtDisplayTextLine(7, "encoder: %d", nMotorEncoder[motorPulley]);
 
   	}
 }
